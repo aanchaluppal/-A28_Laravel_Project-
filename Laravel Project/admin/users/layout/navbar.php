@@ -12,28 +12,35 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-             <li class="<?php
+            <li class="<?php
                         if (isset($setHomeActive)) {
                             echo $setHomeActive;
                         } else {
                             echo '';
                         }
-                        ?>"><a href="home.php">Home</a></li>
+                        ?>"><a href="index.php">Home</a></li>
                         <li class="<?php
-                        if (isset($setDonorActive)) {
-                            echo $setDonorActive;
+                        if (isset($setAboutActive)) {
+                            echo $setAboutActive;
                         } else {
                             echo '';
                         }
-                        ?>"><a href="donor.php">New Donor</a></li>
-                        
-                        <li class="<?php if(isset($setMemberActive)) { echo $setMemberActive; } else { echo ''; } ?>">
-                            <a href="members.php">Our Members</a>
+                        ?>">
+                        <li class="<?php if(isset($setMemberActive)){ echo $setMemberActive; } else { echo ''; } ?>">
+                            <a href="member.php">Our Members</a>
                         </li>
-<!--                        <li class="<?php //if(isset($setBloodRequestActive)){ echo $setBloodRequestActive; } else { echo ''; } ?>">
-                            <a href="blood_request.php">Blood Requests</a>
-                        </li>-->
-                        <li><a href="logout.php">Logout</a></li>
+                        
+                        <li class="<?php if(isset($setJoinUsActive)){ echo $setJoinUsActive; } else { echo ''; } ?>">
+                            <a href="register.php">Join Us</a>
+                        </li>
+                        
+                        <li class="<?php if(isset($setAvailabilityActive)) {echo $setAvailabilityActive;} else {echo '';} ?>">
+                            <a href="availability.php">Check Availability</a>
+                        </li>
+                        
+                        <li class="">
+                            <a href="../index.php">Employee Login</a>
+                        </li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>

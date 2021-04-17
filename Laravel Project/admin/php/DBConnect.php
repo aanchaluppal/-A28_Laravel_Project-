@@ -32,63 +32,86 @@ class DBConnect {
     public function auth(){
         session_start();
         if(! isset($_SESSION['username'])){
-            header("Location: http://localhost/BDManagement/admin");
+            header("Location: http://localhost/BDManagement");
+        }       
+    }
+    public function authLogin(){
+        session_start();
+        if(isset($_SESSION['username'])){
+            header("Location: http://localhost/BDManagement/home.php");
         }
     }
     
     public function checkAuth(){
         session_start();
-        if(isset($_SESSION['username'])){
-            header("Location: http://localhost/BDManagement/admin/home.php");
+        if(! isset($_SESSION['username'])){
+            return false;
+        } else {
+            return true;
         }
     }
 
+
+    public function login($username, $password){
+        $stmt = $this->db->prepare("SELECT * FROM employees WHERE username=? AND password=?");
+        $stmt->execute([$username,$password]);
+        if($stmt->rowCount() > 0){
+            session_start();
+            $emp = $stmt->fetchAll();
+            foreach($emp as $e){
+                $_SESSION['id'] = $e['id'];
+                $_SESSION['username'] = $username;
+                $_SESSION['password'] = $password;
+                $_SESSION['firstName'] = $e['f_name'];
+                $_SESSION['middleName'] = $e['m_name'];
+                $_SESSION['lastName'] = $e['l_name'];
+                $_SESSION['birthDay'] = $e['b_day'];
+                $_SESSION['pcrNumber'] = $e['prc_nr'];
+                $_SESSION['designation'] = $e['designation'];
+                $_SESSION['landline'] = $e['landline'];
+                $_SESSION['mobile'] = $e['mobile'];
+                
+            }
+            
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public function addDonor($fname,$mname,$lname,$sex,$bType,$dob,$hAddress,$city,$donationDate,$stats,$temp,
+            $pulse,$bp,$weight,$hemoglobin,$hbsag,$aids,$malariaSmear,$hematocrit,$mobile,$phone){
+        $stmt = $this->db->prepare("INSERT INTO donors (fname,mname,lname,sex,b_type,bday,h_address,city,don_date,stats,temp,pulse,bp,weight,"
+                . "hemoglobin,hbsag,aids,malaria_smear,hematocrit,mobile,phone)"
+                . "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        $stmt->execute([$fname,$mname,$lname,$sex,$bType,$dob,$hAddress,$city,$donationDate,$stats,$temp,$pulse,$bp,$weight,
+            $hemoglobin,$hbsag,$aids,$malariaSmear,$hematocrit,$mobile,$phone]);
+        return true;
+        
+    }
+    
+    public function searchDonorWithBloodGroup($bloodGroup){
+        $stmt = $this->db->prepare("SELECT * FROM donors WHERE b_type LIKE ?");
+        $stmt->execute([$bloodGroup]);
+        return $stmt->fetchAll();
+    }
+    
+    public function searchDonorByCity($city){
+        $stmt = $this->db->prepare("SELECT * FROM donors WHERE city LIKE ?");
+        $stmt->execute(["%".$city."%"]);
+        return $stmt->fetchAll();
+    }
+    
     public function logout(){
         session_start();
         session_destroy();
-        header("Location: http://localhost/BDManagement/admin");
-    }
-
-    public function addEmployee($username,$password,$firstName,$middleName,$lastName,$pcrNumber,$designation,$landline,$mobile,$birthDay){
-        $stmt = $this->db->prepare("INSERT INTO employees (f_name,m_name,l_name,username,password,b_day,designation,landline,mobile_nr, prc_nr)"
-                . "VALUES (?,?,?,?,?,?,?,?,?,?)");
-        if($stmt->execute([$firstName,$middleName,$lastName,$username,$password,$birthDay,$designation,$landline,$mobile,$pcrNumber]))
-            return true;
-        else
-            return $this->db->errorInfo();
+        header("Location: http://localhost/BDManagement/");
     }
     
-    public function getEmployees(){
-        $stmt = $this->db->prepare("SELECT * FROM employees");
-        $stmt->execute();
-        return $stmt->fetchAll();
-    }
-    
-    public function getEmployeeById($id){
-        $stmt = $this->db->prepare("SELECT * FROM employees WHERE id=?");
+    public function getDonorProfileById($id){
+        $stmt = $this->db->prepare("SELECT * FROM donors WHERE id=?");
         $stmt->execute([$id]);
         return $stmt->fetchAll();
-    }
-    
-    public function updateEmployee($id,$username,$password,$firstName,$middleName,$lastName,$designation,$landline,$mobile,$birthDay){
-        $query = "UPDATE employees SET username=?, password=?,f_name=?,m_name=?,l_name=?,designation=?,landline=?,mobile_nr=?,b_day=? WHERE id=?";
-        $stmt = $this->db->prepare($query);
-        $flag = $stmt->execute([$username,$password,$firstName,$middleName,$lastName,$designation,$landline,$mobile,$birthDay, $id]);
-        if($flag){
-            return true;
-        }else{
-            return false;
-        }
-    }
-    
-    public function remove($id){
-        $stmt = $this->db->prepare("DELETE FROM employees WHERE id=?");
-        $flag = $stmt->execute([$id]);
-        if($flag){
-            return true;
-        }else{
-            return false;
-        }
     }
     
 }

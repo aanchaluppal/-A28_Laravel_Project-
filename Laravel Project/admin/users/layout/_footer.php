@@ -14,7 +14,7 @@
             {
                 padding: 20px;
                 font-size: 30px;
-                width: 300px;
+                width: 30px;
                 text-align: center;
                 text-decoration: none;
                 margin: 5px 2px;
@@ -73,6 +73,8 @@
             margin-top: 10px;
             }
 
+           
+
             .footer-icon a 
             {
                     padding: 8px 0px;
@@ -84,8 +86,6 @@
                     border-radius: 50%;
                     height: 30px;
             }
-
-           
 </style>
         <div class="links">
                         <!-- font awesome icons -->
